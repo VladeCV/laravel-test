@@ -34,7 +34,6 @@
             </tbody>
         </table>
 
-        <!-- BOOTSTRAP MODAL -->
         <div class="modal fade" id="itemModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -83,6 +82,31 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete "<strong>{{ itemToDelete?.name }}</strong>"?
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal" :disabled="loading">
+                            Cancel
+                        </button>
+
+                        <button class="btn btn-danger" @click="deleteItem" :disabled="loading">
+                            <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -92,13 +116,16 @@ import {Modal} from 'bootstrap';
 
 
 let itemModal = null;
+let deleteModalInstance = null;
 export default {
 
     data() {
         return {
             items: [],
             currentItem: {},
-            isEditing: false
+            isEditing: false,
+            itemToDelete: null,
+            loading: false
         };
     },
     mounted() {
@@ -106,6 +133,7 @@ export default {
             this.items = res.data.data || res.data;
         });
         itemModal = new Modal(document.getElementById('itemModal'));
+        deleteModalInstance = new Modal(document.getElementById('deleteModal'));
     },
     methods: {
         createItem() {
@@ -140,11 +168,23 @@ export default {
             });
         },
         confirmDelete(item) {
-            if (!confirm(`Delete "${item.name}"?`)) return;
+            this.itemToDelete = item;
+            deleteModalInstance.show();
+        },
 
-            axios.delete(`/api/items/${item.id}`).then(() => {
-                this.items = this.items.filter(i => i.id !== item.id);
-            });
+        deleteItem() {
+            if (!this.itemToDelete) return;
+
+            this.loading = true;
+            axios.delete(`/api/items/${this.itemToDelete.id}`)
+                .then(() => {
+                    this.items = this.items.filter(i => i.id !== this.itemToDelete.id);
+                    deleteModalInstance.hide();
+                })
+                .finally(() => {
+                    this.loading = false;
+                    this.itemToDelete = null;
+                });
         }
     }
 };
