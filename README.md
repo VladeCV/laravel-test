@@ -34,6 +34,7 @@ npm install
 ```
 
 4. Configure database
+
  ```bash
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
@@ -43,15 +44,21 @@ DB_USERNAME=postgres
 DB_PASSWORD=your_password
 
 ```
+
 5. Run migrations
+
 ```bash
 php artisan migrate
 
 ```
+
 6. Install authentication scaffolding (Laravel Breeze)
+
 ```bash
 ```
-8. Create a test user
+
+8. Create a test user first
+
 ```bash
 php artisan tinker
 
@@ -61,16 +68,29 @@ php artisan tinker
     'password' => bcrypt('password'),
 ]);
 ```
+
 8. Generate a password for the test user
+
 ```bash
+$user = User::where('email', 'test@example.com')->first();
 $user->password = Hash::make('password');
 $user->save();
 ```
+
+NOTE YOUR CREDENTIALS WILL BE email:test@example.com password:password
+
 9. Start the application
+
 ```bash
 php artisan serve
 npm run dev
 ```
+
+10. Login page
+    ![img.png](img.png)
+11. Items page
+    ![img_1.png](img_1.png)
+
 ## Authentication
 
 - Login is handled via Laravel Breeze
@@ -83,19 +103,19 @@ npm run dev
 API Routes
 ```
 
-| Method | URI               | Description    |
-|:-------|:------------------|:---------------|
-| GET    | `/api/items`      | List items     |
-| GET    | `/api/items/{id}` | Get item by id |
-| POST   | `/api/items/{id}` | Create item    |
-| PUT    | `/api/items/{id}` | Update item    |
-| DELETE | `/api/items/{id}` | Delete item    |
+| Method | URI                                     | Description    |
+|:-------|:----------------------------------------|:---------------|
+| GET    | `http://127.0.0.1:8000//api/items`      | List items     |
+| GET    | `http://127.0.0.1:8000//api/items/{id}` | Get item by id |
+| POST   | `http://127.0.0.1:8000//api/items/{id}` | Create item    |
+| PUT    | `http://127.0.0.1:8000//api/items/{id}` | Update item    |
+| DELETE | `http://127.0.0.1:8000//api/items/{id}` | Delete item    |
 
 ```
 WEB Routes
 ```
 
-| Parameter | Type   | Description    |
-|:----------|:-------|:---------------|
-| GET       | /login | Login page     |
-| GET       | /items | Item list page |
+| Parameter | Type                         | Description    |
+|:----------|:-----------------------------|:---------------|
+| GET       | http://127.0.0.1:8000//login | Login page     |
+| GET       | http://127.0.0.1:8000//items | Item list page |
