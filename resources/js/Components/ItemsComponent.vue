@@ -35,28 +35,31 @@
         </table>
 
         <!-- BOOTSTRAP MODAL -->
-        <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal fade" id="itemModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
+
                     <div class="modal-header">
-                        <h5 class="modal-title">Edit Item</h5>
+                        <h5 class="modal-title">
+                            {{ isEditing ? 'Edit Item' : 'Create Item' }}
+                        </h5>
                         <button class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Name</label>
-                            <input class="form-control" v-model="currentItem.name" />
+                            <input class="form-control" v-model="currentItem.name"/>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Description</label>
-                            <textarea class="form-control" v-model="currentItem.description" />
+                            <textarea class="form-control" v-model="currentItem.description"/>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Code</label>
-                            <input class="form-control" v-model="currentItem.code" />
+                            <input class="form-control" v-model="currentItem.code"/>
                         </div>
 
                         <div class="mb-3">
@@ -73,9 +76,10 @@
                             Cancel
                         </button>
                         <button class="btn btn-primary" @click="saveItem">
-                            Save
+                            {{ isEditing ? 'Update' : 'Create' }}
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -84,9 +88,12 @@
 
 <script>
 import axios from 'axios';
-import { Modal } from 'bootstrap';
+import {Modal} from 'bootstrap';
 
+
+let itemModal = null;
 export default {
+
     data() {
         return {
             items: [],
@@ -98,24 +105,47 @@ export default {
         axios.get('/api/items').then(res => {
             this.items = res.data.data || res.data;
         });
+        itemModal = new Modal(document.getElementById('itemModal'));
     },
     methods: {
+        createItem() {
+            this.isEditing = false;
+            this.currentItem = {
+                name: '',
+                description: '',
+                code: '',
+                status: 'active'
+            };
+            itemModal.show();
+        },
         editItem(item) {
-            this.currentItem = { ...item };
-            const modal = new Modal(document.getElementById('editModal'));
-            modal.show();
+            this.isEditing = true;
+            this.currentItem = {...item};
+            itemModal.show();
         },
         saveItem() {
-            axios.put(`/api/items/${this.currentItem.id}`, this.currentItem)
-                .then(res => {
+            const request = this.isEditing
+                ? axios.put(`/api/items/${this.currentItem.id}`, this.currentItem)
+                : axios.post('/api/items', this.currentItem);
+
+            request.then(res => {
+                if (this.isEditing) {
                     const index = this.items.findIndex(i => i.id === this.currentItem.id);
                     if (index !== -1) this.items[index] = res.data.data || res.data;
-                    Modal.getInstance(document.getElementById('editModal')).hide();
-                });
-        },
-        createItem() {
+                } else {
+                    this.items.unshift(res.data.data || res.data);
+                }
 
+                itemModal.hide();
+            });
         },
+        confirmDelete(item) {
+            if (!confirm(`Delete "${item.name}"?`)) return;
+
+            axios.delete(`/api/items/${item.id}`).then(() => {
+                this.items = this.items.filter(i => i.id !== item.id);
+            });
+        }
     }
 };
 </script>
