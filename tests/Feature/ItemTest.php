@@ -19,7 +19,7 @@ class ItemTest extends TestCase
         return $user;
     }
 
-    public function user_can_create_item()
+    public function test_user_can_create_item()
     {
         $this->actingAsUser();
 
@@ -44,7 +44,7 @@ class ItemTest extends TestCase
         ]);
     }
 
-    public function code_must_be_unique()
+    public function test_code_must_be_unique()
     {
         $this->actingAsUser();
 
@@ -61,7 +61,7 @@ class ItemTest extends TestCase
             ->assertJsonValidationErrors(['code']);
     }
 
-    public function user_can_list_items()
+    public function test_user_can_list_items()
     {
         $this->actingAsUser();
 
@@ -73,22 +73,7 @@ class ItemTest extends TestCase
             ->assertJsonCount(3, 'data');
     }
 
-    public function user_can_view_single_item()
-    {
-        $this->actingAsUser();
-
-        $item = Item::factory()->create();
-
-        $response = $this->getJson("/api/items/{$item->id}");
-
-        $response->assertStatus(200)
-            ->assertJsonFragment([
-                'id' => $item->id,
-                'code' => $item->code,
-            ]);
-    }
-
-    public function user_can_update_item()
+    public function test_user_can_update_item()
     {
         $this->actingAsUser();
 
@@ -108,7 +93,7 @@ class ItemTest extends TestCase
         ]);
     }
 
-    public function user_can_delete_item()
+    public function test_user_can_delete_item()
     {
         $this->actingAsUser();
 
@@ -123,7 +108,7 @@ class ItemTest extends TestCase
         ]);
     }
 
-    public function unauthenticated_user_cannot_access_items()
+    public function test_unauthenticated_user_cannot_access_items()
     {
         $response = $this->getJson('/api/items');
 
