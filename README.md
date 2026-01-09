@@ -33,7 +33,19 @@ composer install
 npm install
 ```
 
-4. Configure database
+4. Create database
+
+ ```bash
+CREATE DATABASE "crud_test"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LOCALE_PROVIDER = 'libc'
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+```
+
+5. Configure database
 
  ```bash
 DB_CONNECTION=pgsql
@@ -52,12 +64,7 @@ php artisan migrate
 
 ```
 
-6. Install authentication scaffolding (Laravel Breeze)
-
-```bash
-```
-
-8. Create a test user first
+6. Create a test user first with tinker
 
 ```bash
 php artisan tinker
@@ -69,7 +76,7 @@ php artisan tinker
 ]);
 ```
 
-8. Generate a password for the test user
+7. Generate a password for the test user
 
 ```bash
 $user = User::where('email', 'test@example.com')->first();
@@ -77,19 +84,14 @@ $user->password = Hash::make('password');
 $user->save();
 ```
 
-NOTE YOUR CREDENTIALS WILL BE email:test@example.com password:password
+NOTE YOUR CREDENTIALS WILL BE email: test@example.com password: password
 
-9. Start the application
+8. Start the application
 
 ```bash
 php artisan serve
 npm run dev
 ```
-
-10. Login page
-    ![img.png](img.png)
-11. Items page
-    ![img_1.png](img_1.png)
 
 ## Authentication
 
@@ -103,19 +105,46 @@ npm run dev
 API Routes
 ```
 
-| Method | URI                                     | Description    |
-|:-------|:----------------------------------------|:---------------|
-| GET    | `http://127.0.0.1:8000//api/items`      | List items     |
-| GET    | `http://127.0.0.1:8000//api/items/{id}` | Get item by id |
-| POST   | `http://127.0.0.1:8000//api/items/{id}` | Create item    |
-| PUT    | `http://127.0.0.1:8000//api/items/{id}` | Update item    |
-| DELETE | `http://127.0.0.1:8000//api/items/{id}` | Delete item    |
+| Method | URI                                    | Description    |
+|:-------|:---------------------------------------|:---------------|
+| GET    | `http://127.0.0.1:8000/api/items`      | List items     |
+| GET    | `http://127.0.0.1:8000/api/items/{id}` | Get item by id |
+| POST   | `http://127.0.0.1:8000/api/items/{id}` | Create item    |
+| PUT    | `http://127.0.0.1:8000/api/items/{id}` | Update item    |
+| DELETE | `http://127.0.0.1:8000/api/items/{id}` | Delete item    |
 
 ```
 WEB Routes
 ```
 
-| Parameter | Type                         | Description    |
-|:----------|:-----------------------------|:---------------|
-| GET       | http://127.0.0.1:8000//login | Login page     |
-| GET       | http://127.0.0.1:8000//items | Item list page |
+| Parameter | Type                            | Description    |
+|:----------|:--------------------------------|:---------------|
+| GET       | http://127.0.0.1:8000/login     | Login page     |
+| GET       | http://127.0.0.1:8000/items     | Item list page |
+| GET       | http://127.0.0.1:8000/dashboard | Item list page |
+
+## Screenshots
+
+### Login page
+
+![img.png](img.png)
+
+### Dashboard page
+
+![img_2.png](img_2.png)
+
+### Items page
+
+![img_1.png](img_1.png)
+
+### Create item
+
+![img_3.png](img_3.png)
+
+### Edit item
+
+![img_4.png](img_4.png)
+
+### Delete item
+
+![img_5.png](img_5.png)
